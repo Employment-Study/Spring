@@ -1,0 +1,50 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>com.itbank</groupId>
+	<artifactId>test2</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	
+	<!-- 
+			pom.xml : Project Object Model, 프로젝트 컴파일, 빌드, 라이브러리 의존성을 설정하는 파일
+			
+			groupId 	: 프로젝트의 소속, 다른 프로젝트와 중복될 수 있다.
+			artifactId 	: 프로젝트의 고유이름, 다른 프로젝트와 중복될 수 없다. (groupId가 다르면 중복되어도 상관없다)
+			
+			dependencies : 프로젝트의 라이브러리 의존성, 라이브러리를 추가하면 자동으로 다운로드받고 추가한다
+			build 		: 프로젝트 컴파일 및 빌드 관련 도구 및 설정 
+	 -->
+	 
+	<dependencies>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context</artifactId>
+			<version>4.3.30.RELEASE</version>
+		</dependency>
+	</dependencies> 
+	
+	<build>
+		<plugins>
+			<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.1</version>
+				<configuration>
+					<source>1.8</source>
+					<target>1.8</target>
+					<encoding>utf-8</encoding>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build> 
+	 
+	 
+	 
+	 
+</project>
+
+
+
+
+
+
