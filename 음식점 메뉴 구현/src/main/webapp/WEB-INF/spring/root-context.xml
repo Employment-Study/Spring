@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mybatis-spring="http://mybatis.org/schema/mybatis-spring"
+	xsi:schemaLocation="http://mybatis.org/schema/mybatis-spring http://mybatis.org/schema/mybatis-spring-1.2.xsd
+		http://www.springframework.org/schema/beans https://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd">
+	
+	<!-- Root Context: defines shared resources visible to all other web components -->
+		
+		<bean id="hikariConfig" class="com.zaxxer.hikari.HikariConfig">
+			<property name="driverClassName" value="oracle.jdbc.driver.OracleDriver"/>
+			<property name="jdbcUrl" value="jdbc:oracle:thin:@192.168.1.200:1521:xe"/>
+			<property name="username" value="c##itbank"/>
+			<property name="password" value="it"/>
+		</bean>
+		
+		<!-- 이미 만들어진 객체를 참조할떄에는 ref 새로운 객체를 만들때에는 value 
+			연결한 DB를 여러개 만들 수있는 pool생성
+		-->
+		<bean id="dataSource" class="com.zaxxer.hikari.HikariDataSource">
+			<constructor-arg ref="hikariConfig"/>
+		</bean>
+		<!--  해당 datasource의 객체를 만드는 factory생성 -->
+		<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+			<property name="dataSource" ref="dataSource"></property>
+		</bean>
+			<!--  객체를 생성하는 패턴 생성 -->
+		<bean id="sqlSessionTemplate" class="org.mybatis.spring.SqlSessionTemplate">
+			<constructor-arg ref="sqlSessionFactory"/>
+		</bean>
+		
+		<!-- 지정한 패키지 내부의 interface를 찾아서 실제 sql을 수행할 수 있는 프록시(proxy , 대리자)
+			객체를 생성한 후, 스프링 빈으로 등록하는 과정을 수행하게 한다.
+		 -->
+		<mybatis-spring:scan base-package="com.itbank.repository"/>
+		
+</beans>
