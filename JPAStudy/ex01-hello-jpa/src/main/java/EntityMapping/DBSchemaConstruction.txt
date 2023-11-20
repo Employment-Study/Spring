@@ -1,0 +1,81 @@
+로컬 피시에서 개발할 떄 도움이 된다.
+
+애플리케이션 로딩 시점에 create문을 생성하고 시작할 수 있다.
+JPA는 직접 테이블을 만들지 않고 객체 매핑을 해두면 필요할 떄 테이블을 다 만들어 준다.
+DB 방언을 활용해서  DB에맞는 적절한 DDL 생성
+운영서버에서는 사용하지 않고, 개발 장비에서만 사용한다. 만약 사용한다면 적절히 다듬어야 함.
+
+
+실행시
+Hibernate:
+ ! 기존 테이블을 삭제 후 다시 생성한다.
+ ! persistent.xml 에서 create-drop 을 사용하면 마지막에 DROP으로 테이블이 삭제됨
+ ! "" update를 사용하면 자동으로 추가된 컬럼을 update해준다. 대신 오직 추가만 된다.
+ ! 하지만 create, create-drop, update를 함부로 사용하지 않는다. 수천만건의 데이터가 있는 DB에서 테이블을 삭제하거나 수정할 시 상상할 수 없는 결과를
+  초래할 수 있다.
+ ! validate를 사용하면 정상 매핑이 되는지만 확인한다.
+ !  none은 해당 기능을 사용하지 않도록 설정한다. 사실상 주석이나 다름없다. 관례상 만든것
+
+    drop table Member if exists
+
+
+create table Member (
+       id bigint not null,
+        name varchar(255),
+        primary key (id)
+    )
+
+    Hibernate:
+        select
+            member0_.id as id1_0_0_,
+            member0_.name as name2_0_0_
+        from
+            Member member0_
+        where
+            member0_.id=?
+
+
+
+Member에서 age 변수 생성시
+
+create table Member (
+       id bigint not null,
+        age integer not null,
+        name varchar(255),
+        primary key (id)
+    )
+
+
+
+- 방언별로 달라지는 쿼리
+
+
+Identity전략
+
+문제점 : Data를 insert해봐야 안다.
+Identity전략은  sql을 실행한 후에 ID값을 알 수 있다.
+그래서 em.persist() 시점 이후 즉시 insert SQL 실행 하고 DB에서 식별자를 조회한다.
+예시)
+   //code
+            Member member = new Member();
+            member.setUsername("C");
+            System.out.println("-=------------------");
+            em.persist(member);
+
+            System.out.println("member.id="+ member.getId());
+
+            System.out.println("-=------------------");|
+
+
+    //결과
+    -=------------------
+    Hibernate:
+        /* insert ManagementPersistent.Member
+            */ insert
+            into
+                Member
+                (id, name)
+            values
+                (null, ?)
+    member.id=1 >> persist이후 바로  SQL을 실행하고 커밋하여 값을 가져옴
+    -=------------------
